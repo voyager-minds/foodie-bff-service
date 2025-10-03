@@ -1,37 +1,22 @@
-import {middyfy} from '@libs/lambda';
-import {db} from '@libs/database-manager';
-import {ModerationDecisionDTO} from '../../entities/review.entities';
-import {formatJSONResponse, badRequest, notFound, serverError} from '@libs/api-gateway';
-import {recomputeRestaurantAggregates, recomputeItemAggregates} from '../_shared/aggregates';
-import {APIGatewayEvent} from 'aws-lambda';
+import { middyfy } from '@libs/lambda';
+import fetch from 'node-fetch';
 
-const handler = async (event: APIGatewayEvent) => {
-  try {
-    const reviewId = event.pathParameters?.reviewId!;
-    const body = event.body ?? {};
-    const parsed = ModerationDecisionDTO.safeParse(body);
-    if (!parsed.success) return badRequest(parsed.error.issues.map((i) => i.message).join(', '));
+const REVIEWS_API_URL = process.env.REVIEWS_API_URL;
 
-    // Reject only if currently PENDING or APPROVED → REJECTED (then recompute)
-    const {rows} = await db.query(
-      `UPDATE review.reviews
-       SET status = 'REJECTED'
-       WHERE id = $1 AND status <> 'REJECTED'
-       RETURNING restaurant_id AS "restaurantId", menu_item_id AS "menuItemId", status`,
-      [reviewId]
-    );
-    if (!rows.length) return notFound('Review not found');
-
-    const {restaurantId, menuItemId} = rows[0];
-
-    // Recompute aggregates (in case it was APPROVED earlier)
-    await recomputeRestaurantAggregates(restaurantId);
-    if (menuItemId) await recomputeItemAggregates(menuItemId);
-
-    return formatJSONResponse({reviewId, status: 'REJECTED'});
-  } catch (e) {
-    return serverError(e);
-  }
+const rejectReview = async (event) => {
+  const reviewId = event.pathParameters?.reviewId;
+  const url = `${REVIEWS_API_URL}/admin/moderation/${reviewId}/reject`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: event.body,
+  });
+  const body = await response.text();
+  return {
+    statusCode: response.status,
+    body,
+    headers: { 'Content-Type': response.headers.get('content-type') || 'application/json' },
+  };
 };
 
-export const main = middyfy(handler);
+export const main = middyfy(rejectReview);

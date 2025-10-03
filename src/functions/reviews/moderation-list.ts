@@ -1,22 +1,22 @@
-import {middyfy} from '@libs/lambda';
-import {db} from '@libs/database-manager';
-import {formatJSONResponse, serverError} from '@libs/api-gateway';
+import { middyfy } from '@libs/lambda';
+import fetch from 'node-fetch';
 
-const handler = async () => {
-  try {
-    // For simplicity show pending reviews only.
-    const {rows} = await db.query(
-      `SELECT id, restaurant_id AS "restaurantId", menu_item_id AS "menuItemId",
-              author_sub AS "authorSub", ratings, text,
-              created_at AS "createdAt"
-       FROM review.reviews
-       WHERE status = 'PENDING'
-       ORDER BY created_at ASC
-       LIMIT 200`
-    );
-    return formatJSONResponse(rows);
-  } catch (e) {
-    return serverError(e);
-  }
+const REVIEWS_API_URL = process.env.REVIEWS_API_URL;
+
+const listModeration = async (event) => {
+  const qs = event.queryStringParameters || {};
+  const params = new URLSearchParams(qs as Record<string, string>).toString();
+  const url = `${REVIEWS_API_URL}/admin/moderation${params ? `?${params}` : ''}`;
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  const body = await response.text();
+  return {
+    statusCode: response.status,
+    body,
+    headers: { 'Content-Type': response.headers.get('content-type') || 'application/json' },
+  };
 };
-export const main = middyfy(handler);
+
+export const main = middyfy(listModeration);
