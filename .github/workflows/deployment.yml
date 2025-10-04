@@ -1,0 +1,51 @@
+name: Deploy API to dev
+
+on:
+  push:
+    branches:
+      - develop
+
+permissions:
+  id-token: write  
+  contents: read   
+
+jobs:
+  deploy:
+    runs-on: common-runner-set 
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install iproute2 (for MTU fix)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y iproute2
+
+      - name: Set MTU to 1492 (prevent jumbo packets)
+        run: |
+          IFACE=$(ip route get 1 | awk '{print $5; exit}')
+          echo "Detected interface: $IFACE"
+          sudo ip link set dev $IFACE mtu 1492
+          ip link show $IFACE
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_DEPLOYMENT }}
+          aws-region: ap-southeast-1
+
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Deploy using Serverless Framework (debug + verbose)
+        env:
+          SLS_DEBUG: "*"
+        run: |
+          npx sls deploy --stage dev --verbose
