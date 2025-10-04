@@ -4,15 +4,13 @@ on:
   push:
     branches:
       - develop
-
 permissions:
   id-token: write  
-  contents: read   
+  contents: read 
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest 
-
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -38,7 +36,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_DEV_DEPLOYMENT }}
-          aws-region: ap-southeast-1
+          aws-region: us-west-2
 
       - name: Install dependencies
         run: |

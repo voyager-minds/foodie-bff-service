@@ -21,7 +21,7 @@ const serverlessConfiguration: AWS = {
     name: 'aws',
     runtime: 'nodejs20.x',
     stage: 'dev',
-    profile: '${param:profile}',
+    // profile: '${param:profile}', // Using only for local deployment
     stackName: '${self:service}-stack-${self:provider.stage}',
     apiName: '${self:service}-${self:provider.stage}',
     region: 'us-west-2',
