@@ -1,21 +1,30 @@
 import { middyfy } from '@libs/lambda';
-import fetch from 'node-fetch';
+import { APIGatewayEvent } from 'aws-lambda';
+import axios from 'axios';
 
 const CATALOG_API_URL = process.env.CATALOG_API_URL;
 
-const presignUpload = async (event) => {
+const presignUpload = async (event: APIGatewayEvent) => {
   const url = `${CATALOG_API_URL}/admin/uploads/presign`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: event.body,
-  });
-  const body = await response.text();
-  return {
-    statusCode: response.status,
-    body,
-    headers: { 'Content-Type': response.headers.get('content-type') || 'application/json' },
-  };
+  console.info(`[presignUpload] POST ${url}`);
+  try {
+    const response = await axios.post(url, event.body, {
+      headers: { 'Content-Type': 'application/json' },
+      validateStatus: () => true,
+    });
+    console.info(`[presignUpload] Success: status ${response.status}`);
+    return {
+      statusCode: response.status,
+      body: typeof response.data === 'string' ? response.data : JSON.stringify(response.data),
+      headers: { 'Content-Type': response.headers['content-type'] || 'application/json' },
+    };
+  } catch (error) {
+    console.error(`[presignUpload] Error:`, error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Internal server error' }),
+    };
+  }
 };
 
 export const main = middyfy(presignUpload);
