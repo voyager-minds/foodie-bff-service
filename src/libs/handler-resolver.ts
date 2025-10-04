@@ -1,6 +1,3 @@
-import * as path from 'path';
-
-export const handlerPath = (context: string): string => {
-  const relative = path.relative(process.cwd(), context);
-  return relative.replace(/\\/g, '/');
+export const handlerPath = (context: string) => {
+  return `${context.split(process.cwd())[1].substring(1).replace(/\\/g, '/')}`
 };

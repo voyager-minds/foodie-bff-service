@@ -12,6 +12,7 @@
   "dependencies": {
     "@middy/core": "^3.4.0",
     "@middy/http-json-body-parser": "^3.6.2",
+    "axios": "^1.12.2",
     "middy": "^0.36.0",
     "pg": "^8.16.3",
     "uuid": "^13.0.0",

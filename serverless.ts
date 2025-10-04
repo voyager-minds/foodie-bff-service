@@ -60,8 +60,8 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      CATALOG_API_URL: 'https://api.foodie-catalog.com',
-      REVIEWS_API_URL: 'https://api.foodie-reviews.com',
+      CATALOG_API_URL: 'https://rey0yguye8.execute-api.us-west-2.amazonaws.com',
+      REVIEWS_API_URL: 'https://sgdvpbqpf4.execute-api.us-west-2.amazonaws.com',
     },
   },
   // import the function via paths
@@ -76,7 +76,7 @@ const serverlessConfiguration: AWS = {
       target: 'node20',
       define: { 'require.resolve': undefined },
       platform: 'node',
-      concurrency: 10,
+      concurrency: 5,
     },
     // customDomain: {
     //   rest: {
