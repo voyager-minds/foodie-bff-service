@@ -5,7 +5,7 @@ const serverlessConfiguration: AWS = {
   useDotenv: true,
   service: 'foodie-bff-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild'],
+  plugins: ['serverless-esbuild', 'serverless-offline'],
   params: {
     dev: {
       // domain: '',
