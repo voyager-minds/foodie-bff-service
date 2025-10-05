@@ -1,4 +1,4 @@
-import type { AWS, AwsLambdaVpcConfig } from '@serverless/typescript';
+import type {AWS} from '@serverless/typescript';
 import functions from '@functions/index';
 
 const serverlessConfiguration: AWS = {
@@ -11,8 +11,8 @@ const serverlessConfiguration: AWS = {
       domain: 'api.foodie.codelabs.lk',
       certificate: 'arn:aws:acm:us-west-2:165242359189:certificate/2be9039f-9599-4a42-8874-9fdfb7c2dee3',
       basePath: '${self:service}',
-      securityGroupIds: 'sg-0a9aa1ec74d83eafd',
-      subnetIds: 'subnet-01ab493f734dec71c,subnet-0770e48b164fb5f2c',
+      // securityGroupIds: 'sg-0a9aa1ec74d83eafd',
+      // subnetIds: 'subnet-01ab493f734dec71c,subnet-0770e48b164fb5f2c',
       profile: 'krish',
     },
   },
@@ -20,25 +20,25 @@ const serverlessConfiguration: AWS = {
     name: 'aws',
     runtime: 'nodejs20.x',
     stage: 'dev',
-    // profile: '${param:profile}', // Using only for local deployment
+    //profile: '${param:profile}', // Using only for local deployment
     stackName: '${self:service}-stack-${self:provider.stage}',
     apiName: '${self:service}-${self:provider.stage}',
     region: 'us-west-2',
     memorySize: 1024,
-    httpApi: { cors: true },
+    httpApi: {cors: true},
     endpointType: 'regional',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
     },
-    vpc: {
+    /*  vpc: {
       securityGroupIds: {
         'Fn::Split': [',', '${param:securityGroupIds}'],
       },
       subnetIds: {
         'Fn::Split': [',', '${param:subnetIds}'],
       },
-    } as unknown as AwsLambdaVpcConfig,
+    } as unknown as AwsLambdaVpcConfig,*/
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
@@ -47,8 +47,8 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { ...functions },
-  package: { individually: true },
+  functions: {...functions},
+  package: {individually: true},
   custom: {
     esbuild: {
       bundle: true,
@@ -56,7 +56,7 @@ const serverlessConfiguration: AWS = {
       sourcemap: true,
       exclude: [],
       target: 'node20',
-      define: { 'require.resolve': undefined },
+      define: {'require.resolve': undefined},
       platform: 'node',
       concurrency: 5,
     },
@@ -66,9 +66,9 @@ const serverlessConfiguration: AWS = {
         certificateArn: '${param:certificate}',
         basePath: '${param:basePath}',
         createRoute53Record: true,
-        endpointType: 'regional'
-      }
-    }
+        endpointType: 'regional',
+      },
+    },
   },
 };
 
