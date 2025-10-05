@@ -1,5 +1,25 @@
 import {handlerPath} from '@libs/handler-resolver';
 
+export const updateMenuItem = {
+  handler: `${handlerPath(__dirname)}/admin-update-menu-item.main`,
+  events: [{ httpApi: { method: 'put', path: '/admin/menu-items/{id}' } }],
+};
+
+export const deleteMenuItem = {
+  handler: `${handlerPath(__dirname)}/admin-delete-menu-item.main`,
+  events: [{ httpApi: { method: 'delete', path: '/admin/menu-items/{id}' } }],
+};
+
+export const filterRestaurants = {
+  handler: `${handlerPath(__dirname)}/filter-restaurants.main`,
+  events: [{ httpApi: { method: 'get', path: '/restaurants/filter' } }],
+};
+
+export const searchRestaurants = {
+  handler: `${handlerPath(__dirname)}/search-restaurants.main`,
+  events: [{ httpApi: { method: 'get', path: '/restaurants/search' } }],
+};
+
 export const getRestaurants = {
   handler: `${handlerPath(__dirname)}/list-restaurants.main`,
   events: [{httpApi: {method: 'get', path: '/restaurants'}}],

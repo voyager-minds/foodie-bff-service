@@ -60,8 +60,8 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
-      CATALOG_API_URL: 'https://rey0yguye8.execute-api.us-west-2.amazonaws.com',
-      REVIEWS_API_URL: 'https://sgdvpbqpf4.execute-api.us-west-2.amazonaws.com',
+      CATALOG_API_URL: 'https://api.foodie.codelabs.lk/catalog-service',
+      REVIEWS_API_URL: 'https://api.foodie.codelabs.lk/reviews-service',
     },
   },
   // import the function via paths

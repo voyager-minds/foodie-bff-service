@@ -1,4 +1,4 @@
-import { middyfy } from '@libs/lambda';
+import middy from '@middy/core';
 import { APIGatewayEvent } from 'aws-lambda';
 import axios from 'axios';
 
@@ -13,6 +13,7 @@ const createReview = async (event: APIGatewayEvent) => {
       validateStatus: () => true,
     });
     console.info(`[createReview] Success: status ${response.status}`);
+    
     return {
       statusCode: response.status,
       body: typeof response.data === 'string' ? response.data : JSON.stringify(response.data),
@@ -27,4 +28,4 @@ const createReview = async (event: APIGatewayEvent) => {
   }
 };
 
-export const main = middyfy(createReview);
+export const main = middy(createReview);

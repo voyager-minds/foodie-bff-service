@@ -1,0 +1,28 @@
+import axios from 'axios';
+import middy from '@middy/core';
+import { formatJSONResponse, badRequest, notFound, serverError } from '../../libs/api-gateway';
+import { APIGatewayEvent } from 'aws-lambda';
+
+const CATALOG_BASE_URL = process.env.CATALOG_SERVICE_URL;
+
+const handler = async (event: APIGatewayEvent) => {
+  try {
+    const menuItemId = event.pathParameters?.id;
+    if (!menuItemId) return badRequest('Menu item id is required');
+    const rawBody = event.body ?? '{}';
+    let body;
+    try {
+      body = typeof rawBody === 'string' ? JSON.parse(rawBody) : rawBody;
+    } catch {
+      return badRequest('Malformed JSON in request body');
+    }
+    const url = `${CATALOG_BASE_URL}/admin/menu-items/${menuItemId}`;
+    const response = await axios.put(url, body);
+    if (response.status === 404) return notFound('Menu item not found');
+    return formatJSONResponse(response.data);
+  } catch (e) {
+    return serverError(e);
+  }
+};
+
+export const main = middy(handler);
