@@ -61,7 +61,7 @@ const serverlessConfiguration: AWS = {
       concurrency: 5,
     },
     customDomain: {
-      rest: {
+      http: {
         domainName: '${param:domain}',
         certificateArn: '${param:certificate}',
         basePath: '${param:basePath}',
