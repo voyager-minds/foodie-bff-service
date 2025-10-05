@@ -5,15 +5,14 @@ const serverlessConfiguration: AWS = {
   useDotenv: true,
   service: 'foodie-bff-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild', 'serverless-offline'],
+  plugins: ['serverless-esbuild', 'serverless-offline', 'serverless-domain-manager'],
   params: {
     dev: {
-      // domain: '',
-      // certificate: '',
+      domain: 'api.foodie.codelabs.lk',
+      certificate: 'arn:aws:acm:us-west-2:165242359189:certificate/2be9039f-9599-4a42-8874-9fdfb7c2dee3',
+      basePath: '${self:service}',
       securityGroupIds: 'sg-0a9aa1ec74d83eafd',
       subnetIds: 'subnet-01ab493f734dec71c,subnet-0770e48b164fb5f2c',
-      // apiKey: '${self:provider.apiName}-apikey',
-      // apiKeyValue: 'dS8glZfOdz89lv3bR2hrL3oRkXhU9JNv10vagkg3',
       profile: 'krish',
     },
   },
@@ -26,28 +25,11 @@ const serverlessConfiguration: AWS = {
     apiName: '${self:service}-${self:provider.stage}',
     region: 'us-west-2',
     memorySize: 1024,
-    timeout: 30,
     httpApi: { cors: true },
     endpointType: 'regional',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
-      restApiId: { Ref: "ApiGatewayRestApi" },
-      restApiRootResourceId: { 'Fn::GetAtt': ['ApiGatewayRestApi', 'RootResourceId'] },
-      // apiKeys: [{
-      //   name: '${param:apiKey}',
-      //   value: '${param:apiKeyValue}',
-      //   description: 'API key use to manage resource policy of all inbound calls',
-      //   enabled: true
-      // }],
-      usagePlan: {
-        quota: {
-          limit: 1000, period: 'DAY'
-        },
-        throttle: {
-          rateLimit: 100, burstLimit: 300
-        }
-      }
     },
     vpc: {
       securityGroupIds: {
@@ -78,14 +60,15 @@ const serverlessConfiguration: AWS = {
       platform: 'node',
       concurrency: 5,
     },
-    // customDomain: {
-    //   rest: {
-    //     domainName: '${param:domain}',
-    //     certificateArn: '${param:certificate}',
-    //     createRoute53Record: true,
-    //     endpointType: 'regional'
-    //   }
-    // }
+    customDomain: {
+      rest: {
+        domainName: '${param:domain}',
+        certificateArn: '${param:certificate}',
+        basePath: '${param:basePath}',
+        createRoute53Record: true,
+        endpointType: 'regional'
+      }
+    }
   },
 };
 
