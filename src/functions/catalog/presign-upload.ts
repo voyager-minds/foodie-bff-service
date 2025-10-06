@@ -1,4 +1,4 @@
-import { middyfy } from '@libs/lambda';
+import middy from '@middy/core';
 import { APIGatewayEvent } from 'aws-lambda';
 import axios from 'axios';
 
@@ -9,7 +9,6 @@ const presignUpload = async (event: APIGatewayEvent) => {
   console.info(`[presignUpload] POST ${url}`);
   try {
     const response = await axios.post(url, event.body, {
-      headers: { 'Content-Type': 'application/json' },
       validateStatus: () => true,
     });
     console.info(`[presignUpload] Success: status ${response.status}`);
@@ -27,4 +26,4 @@ const presignUpload = async (event: APIGatewayEvent) => {
   }
 };
 
-export const main = middyfy(presignUpload);
+export const main = middy(presignUpload);
