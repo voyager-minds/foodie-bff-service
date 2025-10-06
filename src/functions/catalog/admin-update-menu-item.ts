@@ -3,7 +3,7 @@ import middy from '@middy/core';
 import { formatJSONResponse, badRequest, notFound, serverError } from '../../libs/api-gateway';
 import { APIGatewayEvent } from 'aws-lambda';
 
-const CATALOG_BASE_URL = process.env.CATALOG_SERVICE_URL;
+const CATALOG_BASE_URL = process.env.CATALOG_API_URL;
 
 const handler = async (event: APIGatewayEvent) => {
   try {
