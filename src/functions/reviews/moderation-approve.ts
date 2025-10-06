@@ -10,7 +10,6 @@ const approveReview = async (event: APIGatewayEvent) => {
   console.info(`[approveReview] POST ${url}`);
   try {
     const response = await axios.post(url, event.body, {
-      headers: { 'Content-Type': 'application/json' },
       validateStatus: () => true,
     });
     console.info(`[approveReview] Success: status ${response.status}`);
