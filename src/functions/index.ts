@@ -1,5 +1,5 @@
 import { addComment, createReview, getReview, listReviews, moderationApprove, moderationList, moderationReject } from './reviews';
-import { adminAddMenuItem, adminCreateRestaurant, deleteMenuItem, filterRestaurants, getMenuForRestaurant, getRestaurantById, getRestaurants, presignUpload, searchRestaurants, updateMenuItem } from './catalog';
+import { adminAddMenuItem, adminCreateRestaurant, createAuthLog, deleteMenuItem, filterRestaurants, getMenuForRestaurant, getRestaurantById, getRestaurants, presignUpload, searchRestaurants, updateMenuItem } from './catalog';
 
 const functions = {
     createReview,
@@ -18,7 +18,8 @@ const functions = {
     searchRestaurants,
     filterRestaurants,
     updateMenuItem,
-    deleteMenuItem
+    deleteMenuItem,
+    createAuthLog
 };
 
 export default functions;

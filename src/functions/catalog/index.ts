@@ -50,3 +50,8 @@ export const presignUpload = {
   handler: `${handlerPath(__dirname)}/presign-upload.main`,
   events: [{httpApi: {method: 'post', path: '/admin/uploads/presign'}}],
 };
+
+export const createAuthLog = {
+  handler: `${handlerPath(__dirname)}/create-auth-log.main`,
+  events: [{httpApi: {method: 'post', path: '/auth/logs'}}],
+};
